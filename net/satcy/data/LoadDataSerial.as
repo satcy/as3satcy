@@ -19,7 +19,7 @@ package net.satcy.data{
 		public function addURLLoader(_path:String, _comp:Function, _error:Function = null):LoadDataSerial{
 			if ( !arr ) arr = [];
 			if ( !path_arr ) path_arr = [];
-			getURLLoader(_path, _comp, _error);
+			setURLLoader(_path, _comp, _error);
 			if ( arr.length == 1 ) arr[0].load(new URLRequest(path_arr[0]));
 			return this;
 		}
@@ -27,13 +27,21 @@ package net.satcy.data{
 		public function addLoader(_path:String, _comp:Function, _error:Function = null):LoadDataSerial{
 			if ( !arr ) arr = [];
 			if ( !path_arr ) path_arr = [];
-			getLoader(_path, _comp, _error);
+			setLoader(_path, _comp, _error);
 			if ( arr.length == 1 ) arr[0].load(new URLRequest(path_arr[0]));
 			return this;
 		}
 		
 		public function addLoaders(_arr:Array, _comp:Function, _error:Function = null):LoadDataSerial{
 			for each ( var _str:String in _arr ) addLoader(_str, _comp, _error);
+			return this;
+		}
+		
+		public function addZip(_path:String, _comp:Function, _error:Function = null):LoadDataSerial{
+			if ( !arr ) arr = [];
+			if ( !path_arr ) path_arr = [];
+			setZip(_path, _comp, _error);
+			if ( arr.length == 1 ) arr[0].load(new URLRequest(path_arr[0]));
 			return this;
 		}
 		
@@ -55,7 +63,7 @@ package net.satcy.data{
 			}
 		}
 		
-		private function getURLLoader(_path:String, _comp:Function, _error:Function = null):URLLoader{
+		private function setURLLoader(_path:String, _comp:Function, _error:Function = null):void{
 			path_arr.push(_path);
 			resetMax();
 			var ld:URLLoader = new URLLoader();
@@ -79,10 +87,9 @@ package net.satcy.data{
 				if ( _error != null ) _error(ld);
 				next();
 			}
-			return ld;
 		}
 		
-		private function getLoader(_path:String, _comp:Function, _error:Function = null):Loader{
+		private function setLoader(_path:String, _comp:Function, _error:Function = null):void{
 			path_arr.push(_path);
 			resetMax();
 			var ld:Loader = new Loader();
@@ -106,7 +113,25 @@ package net.satcy.data{
 				if ( _error != null ) _error(ld);
 				next();
 			}
-			return ld;
+		}
+		
+		private function setZip(_path:String, _comp:Function, _error:Function = null):void{
+			path_arr.push(_path);
+			resetMax();
+			var ld:LoadZip = new LoadZip(null, $comp, _error);
+			ld.addEventListener(ProgressEvent.PROGRESS, onProgressHandler);
+			arr.push(ld);
+			
+			function $comp():void{
+				ld.removeEventListener(ProgressEvent.PROGRESS, onProgressHandler);
+				if ( _comp != null ) _comp(ld);
+				next();
+			}
+			function $error(e:Event):void{
+				ld.removeEventListener(ProgressEvent.PROGRESS, onProgressHandler);
+				if ( _error != null ) _error(ld);
+				next();
+			}
 		}
 		
 		private function resetMax():void{

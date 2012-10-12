@@ -1,0 +1,19 @@
+<languageVersion : 1.0;> 
+kernel NoAlpha 
+< 
+    namespace : "net.satcy"; 
+    vendor : "satcy.net"; 
+    version : 1; 
+    description : "deny alpha channel"; 
+> 
+{ 
+    input image4 foreground; 
+ 
+    output pixel4 dst; 
+    void evaluatePixel() 
+    { 
+        float4 a = sampleNearest(foreground, outCoord());
+        dst = a.rgba; 
+        dst.a = 1.0;
+    } 
+}

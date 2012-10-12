@@ -1,4 +1,4 @@
-package net.satcy.util{
+package net.satcy.string{
 	public function trim(str:String):String {
         var startIndex:int = 0;
         while (isWhitespace(str.charAt(startIndex)))
