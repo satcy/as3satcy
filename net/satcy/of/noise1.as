@@ -4,7 +4,6 @@ package net.satcy.of{
 	}	
 }
 	import __AS3__.vec.Vector;
-	import net.satcy.math.fastFloor;
 	
 internal const perm:Vector.<int> = Vector.<int>([151,160,137,91,90,15,
 	  131,13,201,95,96,53,194,233,7,225,140,36,103,30,69,142,8,99,37,240,21,10,23,
@@ -45,7 +44,7 @@ internal function grad1( hash:int, x:Number ):Number {
 /* 1D simplex noise */
 internal function _slang_library_noise1 (x:Number):Number
 {
-  var i0:int = fastFloor(x);
+  var i0:int = Math.floor(x);
   var i1:int = i0 + 1;
   var x0:Number = x - i0;
   var x1:Number = x0 - 1.0;

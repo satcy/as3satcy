@@ -140,8 +140,7 @@ package net.satcy.data{
 		
 		private function onProgressHandler(e:ProgressEvent):void{
 			var _ratio:Number = e.bytesLoaded/e.bytesTotal;
-			trace(_ratio, arr.length, _stream_max);
-			//this.dispatchEvent(new ProgressEvent(ProgressEvent.PROGRESS, false, false, 
+			this.dispatchEvent(new ProgressEvent(ProgressEvent.PROGRESS, false, false, _ratio + (_stream_max-arr.length), _stream_max));
 		}
 	}	
 }

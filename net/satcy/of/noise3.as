@@ -5,7 +5,6 @@ package net.satcy.of{
 
 }
 	import __AS3__.vec.Vector;
-	import net.satcy.math.fastFloor;
 internal const F3:Number = 0.333333333;
 internal const G3:Number = 0.166666667;
 internal const perm:Vector.<int> = Vector.<int>([151,160,137,91,90,15,
@@ -54,9 +53,9 @@ internal function _slang_library_noise3 (x:Number, y:Number, z:Number):Number{
     var xs:Number = x+s;
     var ys:Number = y+s;
     var zs:Number = z+s;
-    var i:int = fastFloor(xs);
-    var j:int = fastFloor(ys);
-    var k:int = fastFloor(zs);
+    var i:int = Math.floor(xs);
+    var j:int = Math.floor(ys);
+    var k:int = Math.floor(zs);
 
     var t:Number = Number(i+j+k)*G3; 
     var X0:Number = i-t; /* Unskew the cell origin back to (x,y,z) space */
