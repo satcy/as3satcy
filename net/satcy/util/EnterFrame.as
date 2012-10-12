@@ -1,6 +1,4 @@
 package net.satcy.util{
-	import flash.display.DisplayObjectContainer;
-	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.utils.Dictionary;
@@ -19,6 +17,8 @@ package net.satcy.util{
 		private static var dict:Dictionary = new Dictionary(true);
 		private static var cancel_dict:Dictionary = new Dictionary(true);
 		private static var remain:int = 0;
+		private static var _frameCount:uint = 0;
+		public static function get frameCount():uint{ return _frameCount; }
 		
 		public static function add(__mc:*, __handler:Function, _groupId:int = 0):void{
 			if ( dict[__mc] != undefined ){
@@ -69,6 +69,7 @@ package net.satcy.util{
 		private static function start():void{
 			if ( isRun ) return;
 			isRun = true;
+			_movieclip.removeEventListener(Event.ENTER_FRAME, onEnterFrameHandler);
 			_movieclip.addEventListener(Event.ENTER_FRAME, onEnterFrameHandler, false, 0, true);
 		}
 		
@@ -79,6 +80,7 @@ package net.satcy.util{
 		}
 		
 		private static function onEnterFrameHandler(e:Event):void{
+			_frameCount++;
 			var fn:Function;
 			var arg:Array = [e];
 			var cnt:int = 0;

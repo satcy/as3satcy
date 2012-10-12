@@ -44,7 +44,7 @@ internal function grad1( hash:int, x:Number ):Number {
 /* 1D simplex noise */
 internal function _slang_library_noise1 (x:Number):Number
 {
-  var i0:int = Math.floor(x);
+  var i0:int = (x>0) ? int(x) : (int(x)-1);
   var i1:int = i0 + 1;
   var x0:Number = x - i0;
   var x1:Number = x0 - 1.0;

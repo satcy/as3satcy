@@ -68,10 +68,10 @@ internal function _slang_library_noise4 (x:Number, y:Number, z:Number, w:Number)
     var ys:Number = y + s;
     var zs:Number = z + s;
     var ws:Number = w + s;
-    var i:int = Math.floor(xs);
-    var j:int = Math.floor(ys);
-    var k:int = Math.floor(zs);
-    var l:int = Math.floor(ws);
+    var i:int = (xs>0) ? int(xs) : (int(xs)-1);
+    var j:int = (ys>0) ? int(ys) : (int(ys)-1);
+    var k:int = (zs>0) ? int(zs) : (int(zs)-1);
+    var l:int = (ws>0) ? int(ws) : (int(ws)-1);
 
     var t:Number = (i + j + k + l) * G4; /* Factor for 4D unskewing */
     var X0:Number = i - t; /* Unskew the cell origin back to (x,y,z,w) space */

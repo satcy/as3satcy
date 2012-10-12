@@ -51,8 +51,8 @@ internal function _slang_library_noise2 (x:Number, y:Number):Number{
     var s:Number = (x+y)*F2; /* Hairy factor for 2D */
     var xs:Number = x + s;
     var ys:Number = y + s;
-    var i:int = Math.floor(xs);
-    var j:int = Math.floor(ys);
+    var i:int = (xs>0) ? int(xs) : (int(xs)-1);
+    var j:int = (ys>0) ? int(ys) : (int(ys)-1);
 
     var t:Number = (Number)(i+j)*G2;
     var X0:Number = i-t; /* Unskew the cell origin back to (x,y) space */

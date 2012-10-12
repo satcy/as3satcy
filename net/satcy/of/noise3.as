@@ -53,9 +53,9 @@ internal function _slang_library_noise3 (x:Number, y:Number, z:Number):Number{
     var xs:Number = x+s;
     var ys:Number = y+s;
     var zs:Number = z+s;
-    var i:int = Math.floor(xs);
-    var j:int = Math.floor(ys);
-    var k:int = Math.floor(zs);
+    var i:int = (xs>0) ? int(xs) : (int(xs)-1);
+    var j:int = (ys>0) ? int(ys) : (int(ys)-1);
+    var k:int = (zs>0) ? int(zs) : (int(zs)-1);
 
     var t:Number = Number(i+j+k)*G3; 
     var X0:Number = i-t; /* Unskew the cell origin back to (x,y,z) space */
