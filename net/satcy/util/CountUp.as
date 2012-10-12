@@ -1,0 +1,1 @@
+﻿package net.satcy.util{			public class CountUp{		public static var count:int = 0;		public static function init():void{			count = 0:		}		public static function counter():Number{			return count++;		}	}	}

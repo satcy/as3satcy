@@ -1,0 +1,1 @@
+﻿package net.satcy.ddd{		public class Point3d{		public var x:Number,y:Number,z:Number = 0;		public function Point3d(_x:Number, _y:Number, _z:Number){			x = _x;			y = _y;			z = _z;		}			}	}

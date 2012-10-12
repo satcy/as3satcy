@@ -1,0 +1,1 @@
+﻿package net.satcy.ddd{		public class Camera3d{				public var x:Number;		public var y:Number;		public var z:Number;		public var rotationZ:Number;				public function Camera3d(_x:Number, _y:Number, _z:Number){						x = _x;			y = _y;			z = _z;						rotationZ = 0;		}					}	}
