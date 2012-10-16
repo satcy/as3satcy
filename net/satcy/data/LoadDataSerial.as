@@ -2,10 +2,14 @@ package net.satcy.data{
 	import flash.display.Loader;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
+	import flash.events.IEventDispatcher;
 	import flash.events.IOErrorEvent;
 	import flash.events.ProgressEvent;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
+	
+	import net.satcy.event.EventHelper;
+	
 	public class LoadDataSerial extends EventDispatcher{
 		
 		private var arr:Array;
@@ -14,7 +18,14 @@ package net.satcy.data{
 		
 		private var _stream_max:int = 0;
 		
-		public function LoadDataSerial(){}	
+		private var event:EventHelper;
+		
+		private var _auto_destroy:Boolean = true;
+		
+		public function LoadDataSerial(_auto_destroy:Boolean = true){
+			this._auto_destroy = _auto_destroy;
+			event = new EventHelper();
+		}	
 		
 		public function addURLLoader(_path:String, _comp:Function, _error:Function = null):LoadDataSerial{
 			if ( !arr ) arr = [];
@@ -50,6 +61,21 @@ package net.satcy.data{
 			return this;
 		}
 		
+		public function destroy():void{
+			if ( arr ) {
+				for each ( var ld:* in arr ) {
+					if ( ld is URLLoader || ld is Loader ) try { ld["close"](); } catch(e:*) {}
+					else if ( ld is LoadZip ) ld["destroy"]();
+					if ( ld is IEventDispatcher ) event.removeEventListenerAll(ld as IEventDispatcher);
+				}
+				arr = null;
+			}
+			path_arr = null;
+			_complete = null;
+			event.destroy();
+			event = null;
+		}
+		
 		private function next():void{
 			arr.splice(0, 1);
 			path_arr.splice(0, 1);
@@ -60,6 +86,7 @@ package net.satcy.data{
 				_stream_max = 0;
 				if ( _complete != null ) _complete();
 				_complete = null;
+				if ( _auto_destroy ) destroy();
 			}
 		}
 		
@@ -67,23 +94,19 @@ package net.satcy.data{
 			path_arr.push(_path);
 			resetMax();
 			var ld:URLLoader = new URLLoader();
-			ld.addEventListener(Event.COMPLETE, $comp);
-			ld.addEventListener(IOErrorEvent.IO_ERROR, $error);
-			ld.addEventListener(ProgressEvent.PROGRESS, onProgressHandler);
+			event.addEventListener(ld, Event.COMPLETE, $comp);
+			event.addEventListener(ld, IOErrorEvent.IO_ERROR, $error);
+			event.addEventListener(ld, ProgressEvent.PROGRESS, onProgressHandler);
 			
 			arr.push(ld);
 			
 			function $comp(e:Event):void{
-				ld.removeEventListener(Event.COMPLETE, $comp);
-				ld.removeEventListener(IOErrorEvent.IO_ERROR, $error);
-				ld.removeEventListener(ProgressEvent.PROGRESS, onProgressHandler);
+				event.removeEventListenerAll(ld);
 				if ( _comp != null ) _comp(ld);
 				next();
 			}
 			function $error(e:Event):void{
-				ld.removeEventListener(Event.COMPLETE, $comp);
-				ld.removeEventListener(IOErrorEvent.IO_ERROR, $error);
-				ld.removeEventListener(ProgressEvent.PROGRESS, onProgressHandler);
+				event.removeEventListenerAll(ld);
 				if ( _error != null ) _error(ld);
 				next();
 			}
@@ -93,23 +116,19 @@ package net.satcy.data{
 			path_arr.push(_path);
 			resetMax();
 			var ld:Loader = new Loader();
-			ld.contentLoaderInfo.addEventListener(Event.COMPLETE, $comp);
-			ld.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, $error);
-			ld.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS, onProgressHandler);
+			event.addEventListener(ld.contentLoaderInfo, Event.COMPLETE, $comp);
+			event.addEventListener(ld.contentLoaderInfo, IOErrorEvent.IO_ERROR, $error);
+			event.addEventListener(ld.contentLoaderInfo, ProgressEvent.PROGRESS, onProgressHandler);
 			arr.push(ld);
 			
 			function $comp(e:Event):void{
-				ld.contentLoaderInfo.removeEventListener(Event.COMPLETE, $comp);
-				ld.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, $error);
-				ld.contentLoaderInfo.removeEventListener(ProgressEvent.PROGRESS, onProgressHandler);
+				event.removeEventListenerAll(ld.contentLoaderInfo);
 				if ( !LoadSwfManager.getInstance().loadedCheck(_path) ) LoadSwfManager.getInstance().loadedStore(_path, ld);
 				if ( _comp != null ) _comp(ld);
 				next();
 			}
 			function $error(e:Event):void{
-				ld.contentLoaderInfo.removeEventListener(Event.COMPLETE, $comp);
-				ld.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, $error);
-				ld.contentLoaderInfo.removeEventListener(ProgressEvent.PROGRESS, onProgressHandler);
+				event.removeEventListenerAll(ld.contentLoaderInfo);
 				if ( _error != null ) _error(ld);
 				next();
 			}
@@ -119,16 +138,16 @@ package net.satcy.data{
 			path_arr.push(_path);
 			resetMax();
 			var ld:LoadZip = new LoadZip(null, $comp, _error);
-			ld.addEventListener(ProgressEvent.PROGRESS, onProgressHandler);
+			event.addEventListener(ld, ProgressEvent.PROGRESS, onProgressHandler);
 			arr.push(ld);
 			
 			function $comp():void{
-				ld.removeEventListener(ProgressEvent.PROGRESS, onProgressHandler);
+				event.removeEventListenerAll(ld);
 				if ( _comp != null ) _comp(ld);
 				next();
 			}
 			function $error(e:Event):void{
-				ld.removeEventListener(ProgressEvent.PROGRESS, onProgressHandler);
+				event.removeEventListenerAll(ld);
 				if ( _error != null ) _error(ld);
 				next();
 			}
