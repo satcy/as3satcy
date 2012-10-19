@@ -6,7 +6,7 @@ package net.satcy.view{
 		
 		function show():void;
 		function hide(_fn:Function = null):void;
-		function onResizing():void;
+		function onResizing(w:Number = 0, h:Number = 0):void;
 		function get _thisWidth():Number;
 		function get _thisHeight():Number;
 

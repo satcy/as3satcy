@@ -7,6 +7,8 @@ package net.satcy.data{
 	import flash.events.ProgressEvent;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
+	import flash.system.ApplicationDomain;
+	import flash.system.LoaderContext;
 	
 	import net.satcy.event.EventHelper;
 	
@@ -64,7 +66,7 @@ package net.satcy.data{
 		public function destroy():void{
 			if ( arr ) {
 				for each ( var ld:* in arr ) {
-					if ( ld is URLLoader || ld is Loader ) try { ld["close"](); } catch(e:*) {}
+					if ( ld is URLLoader || ld is Loader ) try { ld["close"](); ld["unload"](); } catch(e:*) {}
 					else if ( ld is LoadZip ) ld["destroy"]();
 					if ( ld is IEventDispatcher ) event.removeEventListenerAll(ld as IEventDispatcher);
 				}
@@ -79,7 +81,23 @@ package net.satcy.data{
 		private function next():void{
 			arr.splice(0, 1);
 			path_arr.splice(0, 1);
-			if ( arr.length > 0 ) arr[0].load(new URLRequest(path_arr[0]));
+			
+			if ( arr.length > 0 ) {
+				var ld:* = arr[0];
+				var _path:String = path_arr[0];
+				var req:URLRequest = new URLRequest(_path);
+				if ( ld is Loader ) {
+					var loader_context:LoaderContext;
+					if ( _path.indexOf(".swf") != -1 ){
+						loader_context = new LoaderContext(false, ApplicationDomain.currentDomain);
+					}else{
+						loader_context = new LoaderContext(true);
+					}
+					ld.load(req, loader_context );
+				} else {
+					ld.load(req);
+				}
+			}
 			if ( arr.length == 0 ) {
 				arr = null;
 				path_arr = null;
