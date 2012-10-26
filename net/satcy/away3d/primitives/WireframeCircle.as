@@ -88,17 +88,17 @@
 			var index : int;
 			var i:int;
 			var _radian:Number = 0;
-
+			var _cep:Number = (Math.PI*2)/_segmentsR;
 			if (_orientation == ORIENTATION_XY) {
 				v0.x = v0.y = v0.z = 0;
 				v1.x = v1.y = v1.z = 0;
 
 				for (i = 0; i < _segmentsR; i++) {
-					_radian = (i/_segmentsR)*Math.PI*2;
+					_radian = i*_cep;
 					v0.x = Math.cos(_radian)*this._radius;
 					v0.y = Math.sin(_radian)*this._radius;
 					
-					_radian = ((i+1)/_segmentsR)*Math.PI*2;
+					_radian = (i+1)*_cep;
 					v1.x = Math.cos(_radian)*this._radius;
 					v1.y = Math.sin(_radian)*this._radius;
 					
@@ -112,11 +112,11 @@
 				v1.x = v1.y = v1.z = 0;
 
 				for (i = 0; i < _segmentsR; i++) {
-					_radian = (i/_segmentsR)*Math.PI*2;
+					_radian = i*_cep;
 					v0.x = Math.cos(_radian)*this._radius;
 					v0.z = Math.sin(_radian)*this._radius;
 					
-					_radian = ((i+1)/_segmentsR)*Math.PI*2;
+					_radian = (i+1)*_cep;
 					v1.x = Math.cos(_radian)*this._radius;
 					v1.z = Math.sin(_radian)*this._radius;
 					
@@ -129,11 +129,11 @@
 				v1.x = v1.y = v1.z = 0;
 
 				for (i = 0; i < _segmentsR; i++) {
-					_radian = (i/_segmentsR)*Math.PI*2;
+					_radian = i*_cep;
 					v0.y = Math.cos(_radian)*this._radius;
 					v0.z = Math.sin(_radian)*this._radius;
 					
-					_radian = ((i+1)/_segmentsR)*Math.PI*2;
+					_radian = (i+1)*_cep;
 					v1.y = Math.cos(_radian)*this._radius;
 					v1.z = Math.sin(_radian)*this._radius;
 					

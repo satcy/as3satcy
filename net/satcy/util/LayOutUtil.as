@@ -52,7 +52,7 @@ package net.satcy.util{
 				} 
 			}
 			for( var i:* in dict ){
-				IView(dict[i]).onResizing();
+				IView(dict[i]).onResizing(sw, sh);
 			}
 		}
 		
