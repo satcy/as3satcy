@@ -41,7 +41,22 @@ package net.satcy.data{
 			if ( !arr ) arr = [];
 			if ( !path_arr ) path_arr = [];
 			setLoader(_path, _comp, _error);
-			if ( arr.length == 1 ) arr[0].load(new URLRequest(path_arr[0]));
+			if ( arr.length == 1 ) {
+				var ld:* = arr[0];
+				var _path:String = path_arr[0];
+				var req:URLRequest = new URLRequest(_path);
+				if ( ld is Loader ) {
+					var loader_context:LoaderContext;
+					if ( _path.indexOf(".swf") != -1 ){
+						loader_context = new LoaderContext(false, ApplicationDomain.currentDomain);
+					}else{
+						loader_context = new LoaderContext(true);
+					}
+					ld.load(req, loader_context );
+				} else {
+					ld.load(req);
+				}
+			}
 			return this;
 		}
 		
