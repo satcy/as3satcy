@@ -82,6 +82,8 @@ internal function _slang_library_noise2 (x:Number, y:Number):Number{
     /* Wrap the integer indices at 256, to avoid indexing perm[] out of bounds */
     ii = i % 256;
     jj = j % 256;
+    while ( ii < 0 ) ii += 256;
+    while ( jj < 0 ) jj += 256;
 
     /* Calculate the contribution from the three corners */
     t0 = 0.5 - x0*x0-y0*y0;

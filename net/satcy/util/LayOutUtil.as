@@ -28,8 +28,9 @@ package net.satcy.util{
 			dict = new Dictionary(true);
 		}
 		
-		public static function add(_view:IView):void{
+		public static function add(_view:IView, withExec:Boolean = false):void{
 			dict[_view] = _view;
+			if ( withExec ) _view.onResizing(sw, sh);
 		}
 		
 		public static function remove(_view:IView):void{
