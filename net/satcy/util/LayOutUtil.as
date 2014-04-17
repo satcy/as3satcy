@@ -2,6 +2,7 @@ package net.satcy.util{
 	import flash.display.Stage;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
+	import flash.events.Event;
 	import flash.geom.Rectangle;
 	import flash.utils.Dictionary;
 	
@@ -28,13 +29,21 @@ package net.satcy.util{
 			dict = new Dictionary(true);
 		}
 		
-		public static function add(_view:IView, withExec:Boolean = false):void{
+		public static function add(_view:IView, _auto_remove_at_remove_from_stage:Boolean = false):void{
 			dict[_view] = _view;
-			if ( withExec ) _view.onResizing(sw, sh);
+			if ( _auto_remove_at_remove_from_stage ) {
+				_view.addEventListener(Event.REMOVED_FROM_STAGE, onRemoveFromStageHandler);
+			}
+		}
+		
+		private static function onRemoveFromStageHandler(e:Event):void{
+			var _view:IView = e.target as IView;
+			_view.removeEventListener(Event.REMOVED_FROM_STAGE, onRemoveFromStageHandler);
+			remove(_view);
 		}
 		
 		public static function remove(_view:IView):void{
-			delete dict[_view];
+			if ( dict[_view] ) delete dict[_view];
 		}
 		
 		public static function dump():void{

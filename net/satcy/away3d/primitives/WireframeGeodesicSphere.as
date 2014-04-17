@@ -1,5 +1,7 @@
 package net.satcy.away3d.primitives {
 
+    import __AS3__.vec.Vector;
+    
     import away3d.primitives.WireframePrimitiveBase;
     
     import flash.geom.Matrix3D;
@@ -15,7 +17,10 @@ package net.satcy.away3d.primitives {
         private static var deg360:Number = Math.PI*2;
 		
 		private var _vectors:Array;
-
+		private var _vertices:Vector.<Vector3D>;
+		private var _indices:Vector.<uint>;
+		private var _uvs:Vector.<Number>;
+		
         public function WireframeGeodesicSphere(radius:Number = 50, fractures:uint = 2, color:uint = 0xFFFFFF, thickness:Number = 1) {
             super(color, thickness);
             _radius = radius;
@@ -68,6 +73,32 @@ package net.satcy.away3d.primitives {
                 }
             }
 		}
+		
+		public function getNearTriangle(vec:Vector3D):Array{
+			var a:Array = [];
+			var i:int = 0;
+			var l:int = _indices.length;
+			var min:Number = Number.MAX_VALUE;
+			var d:Number = 0;
+			for ( i=0; i<l; i+= 3 ) {
+				var v1:Vector3D = _vertices[_indices[i]];
+				var v2:Vector3D = _vertices[_indices[i+1]];
+				var v3:Vector3D = _vertices[_indices[i+2]];
+				d = 0;
+				d += Vector3D.distance(vec, v1);
+				d += Vector3D.distance(vec, v2);
+				d += Vector3D.distance(vec, v3);
+				if ( d < min ) {
+					a = [v1, v2, v3,
+					_uvs[_indices[i]*2], _uvs[_indices[i]*2+1],
+					_uvs[_indices[i+1]*2], _uvs[_indices[i+1]*2+1],
+					_uvs[_indices[i+2]*2], _uvs[_indices[i+2]*2+1]
+					];
+					min = d;
+				}
+			}
+			return a;
+		}
 
         override protected function buildGeometry():void {
             if (_fractures == 0) return;
@@ -82,7 +113,7 @@ package net.satcy.away3d.primitives {
             vertices.push(new Vector3D(0, 0, _radius, - 1));
             uvs.length += 2;
             for (n = 0; n < 5; n++) {
-                theta = deg360*n/5;
+                theta = deg360*n/5 - 0.03;
                 sin = Math.sin(theta);
                 cos = Math.cos(theta);
                 vertices.push(new Vector3D(subrad*cos, subrad*sin, subz, - 1));
@@ -136,7 +167,6 @@ package net.satcy.away3d.primitives {
                     interpolate(12 + ((t + 1)%5 + 25)*(_fractures - 1) + n, 12 + (t + 25)*(_fractures - 1) + n, n + 1, vertices, uvs);
                 }
             }
-
             for (t = 0; t < sections; t++) {
                 for (var row:uint = 0; row < _fractures; row++) {
                     for (var col:uint = 0; col <= row; col++) {
@@ -221,6 +251,7 @@ package net.satcy.away3d.primitives {
                             } else {
                                 cu = Math.atan2(c.y, c.x)/deg360 + 0.5;
                             }
+                            
                             cv = -Math.asin(c.z/_radius)/deg180 + 0.5;
                             if (aIndex == 0 || aIndex == 11) {
                                 au = bu + (cu - bu)*0.5;
@@ -251,6 +282,7 @@ package net.satcy.away3d.primitives {
                             }
                             uvs[cIndex*2] = 1 - cu;
                             uvs[cIndex*2 + 1] = cv;
+                            //if ( au == 0.5 || bu == 0.5 || cu == 0.5 ) log("b", aIndex, bIndex, cIndex, au, bu, cu);
                             c.w = 1;
                             indices.push(aIndex, cIndex, bIndex);
                         }
@@ -324,6 +356,9 @@ package net.satcy.away3d.primitives {
                 }
             }
             _vectors = vectors;
+            _vertices = vertices;
+            _indices = indices;
+            _uvs = uvs;
         }
         private function createVertex(x:Number, y:Number, z:Number):Vector3D {
             var vertex:Vector3D = new Vector3D();

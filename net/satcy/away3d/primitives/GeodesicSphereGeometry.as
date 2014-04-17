@@ -1,35 +1,40 @@
-package net.satcy.away3d.primitives {
+package net.satcy.away3d.primitives{
 
     import flash.geom.Vector3D;
     import flash.geom.Matrix3D;
     import away3d.primitives.PrimitiveBase;
-    import away3d.core.base.SubGeometry;
+    import away3d.core.base.CompactSubGeometry;
 
     public class GeodesicSphereGeometry extends PrimitiveBase {
+        // プロパティ
         private var _radius:Number;
         private var _fractures:uint;
+        private var vertices:Vector.<Vector3D>;
         private var uvData:Vector.<Number>;
         private static var radian:Number = Math.PI/180;
         private static var sections:uint = 20;
         private static var deg180:Number = Math.PI;
         private static var deg360:Number = Math.PI*2;
 
+        // コンストラクタ
         public function GeodesicSphereGeometry(radius:Number = 50, fractures:uint = 2) {
             super();
             _radius = radius;
             _fractures = fractures;
         }
 
+        // メソッド
         override protected function buildGeometry(target:SubGeometry):void {
             if (_fractures == 0) return;
-            var vertices:Vector.<Vector3D> = new Vector.<Vector3D>(0, false);
+            //var vertices:Vector.<Vector3D> = new Vector.<Vector3D>(0, false);
+            vertices = new Vector.<Vector3D>(0, false);
             var uvs:Vector.<Number> = new Vector.<Number>(0, false);
             var indices:Vector.<uint> = new Vector.<uint>();
             var n:uint, t:uint;
             var theta:Number, cos:Number, sin:Number;
             var subz:Number = 4.472136E-001*_radius;
             var subrad:Number = 2*subz;
-
+            //vertices, uvs 生成
             vertices.push(new Vector3D(0, 0, _radius, - 1));
             uvs.length += 2;
             for (n = 0; n < 5; n++) {
@@ -48,7 +53,7 @@ package net.satcy.away3d.primitives {
             }
             vertices.push(new Vector3D(0, 0, - _radius, - 1));
             uvs.length += 2;
-
+            //vertices, uvs 補間
             for (n = 1; n < 6; n++) {
                 interpolate(0, n, _fractures, vertices, uvs);
             }
@@ -87,7 +92,7 @@ package net.satcy.away3d.primitives {
                     interpolate(12 + ((t + 1)%5 + 25)*(_fractures - 1) + n, 12 + (t + 25)*(_fractures - 1) + n, n + 1, vertices, uvs);
                 }
             }
-
+            //indeces 生成
             for (t = 0; t < sections; t++) {
                 for (var row:uint = 0; row < _fractures; row++) {
                     for (var col:uint = 0; col <= row; col++) {
@@ -208,21 +213,30 @@ package net.satcy.away3d.primitives {
                     }
                 }
             }
+            //vertices 座標補正
             var matrix:Matrix3D = new Matrix3D();
             matrix.appendRotation(- 90, Vector3D.X_AXIS);
+            matrix.appendRotation(180, Vector3D.Y_AXIS);
             for (n = 0; n < vertices.length; n++) {
                 var vertex:Vector3D = vertices[n];
                 vertices[n] = matrix.transformVector(vertex);
             }
-			target.updateVertexData(createVertices(vertices));
+            //vertices, indices 適用
+            /*
+            target.updateVertexData(createVertices(vertices));
             target.updateVertexNormalData(createVertexNormals(vertices));
             target.updateVertexTangentData(createVertexTangents(vertices));
+            */
+            //indices 適用
             target.updateIndexData(indices);
-            
+            //uvData
             uvData = uvs;
         }
         override protected function buildGeometry(target:SubGeometry):void {
-            target.updateUVData(uvData);
+            //uvData 適用
+            //target.updateUVData(uvData);
+            //vertices, uvData 適用
+            target.fromVectors(createVertices(vertices), uvData, createVertexNormals(vertices), createVertexTangents(vertices));
         }
         private function createVertex(x:Number, y:Number, z:Number):Vector3D {
             var vertex:Vector3D = new Vector3D();

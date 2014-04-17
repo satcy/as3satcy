@@ -151,6 +151,10 @@ internal function _slang_library_noise4 (x:Number, y:Number, z:Number, w:Number)
     jj = j % 256;
     kk = k % 256;
     ll = l % 256;
+    while ( ii < 0 ) ii += 256;
+    while ( jj < 0 ) jj += 256;
+    while ( kk < 0 ) kk += 256;
+    while ( ll < 0 ) ll += 256;
 
     /* Calculate the contribution from the five corners */
     t0 = 0.6 - x0*x0 - y0*y0 - z0*z0 - w0*w0;

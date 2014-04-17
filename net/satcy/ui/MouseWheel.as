@@ -33,6 +33,17 @@ package net.satcy.ui{
 				'}'
 			);
 		}
+		
+		public function destroy():void{
+			if (!ExternalInterface.available) return;
+			ExternalInterface.call(
+				'function() {' + 
+					'var obj = document.getElementById("' + ExternalInterface.objectID + '");' +
+					'obj.onmouseout();' +
+				'}'
+			);
+		}
+		
 		private function handleMouseWheel(delta:Number):void {
 			dispatchEvent(
 				new MouseEvent(MouseEvent.MOUSE_WHEEL, true, false, 0, 0, null, false, false, false, false, delta)

@@ -30,7 +30,7 @@ package net.satcy.util
 		}
 		
 		private function onEnterFrameHandler(e:Event):void{
-			if ( arr.length == 0 || arr == null ){
+			if ( arr == null || arr.length == 0 ){
 				this.dispatchEvent(new Event(Event.COMPLETE, false));
 				stop();
 			}else{

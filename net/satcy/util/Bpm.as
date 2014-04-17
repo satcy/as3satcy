@@ -42,9 +42,10 @@ package net.satcy.util{
 			dsp.removeEventListener(Event.CHANGE, _fn);
 		}
 		
-		private static function dispatch():void{
+		public static function dispatch():void{
+			if ( !dsp ) return;
 			_cnt++;
-			//if ( _cnt > 31 ) _cnt = 0;
+			if ( _cnt > 31 ) _cnt = 0;
 			dsp.dispatchEvent(new Event(Event.CHANGE));
 		}
 	}
