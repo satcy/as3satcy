@@ -12,7 +12,7 @@ package net.satcy.of
 		var tx:Number = 0;
 		for ( var i:int = 0; i<str.length; i++ ) {
 			var bmp:BitmapData = bf.getBitmapData(str.charAt(i));
-			log(bmp);
+			
 			if ( bmp ) {
 				target.copyPixels(bmp, bmp.rect, new Point(tx + x, y));
 			} 
