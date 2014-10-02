@@ -75,7 +75,9 @@ package net.satcy.air.osc
 		public function sendMessage(address:String, vals:Array):void{
 			if ( !_osc ) return;
 			var p:OSCPacket = new OSCPacket(address, vals, _to_ip, _to_port);
-			_osc.sendOSCPacket(p);
+			try{
+				_osc.sendOSCPacket(p);
+			} catch(e:*){}
 		}
 		
 		public static function addEvent(fn:Function):void{

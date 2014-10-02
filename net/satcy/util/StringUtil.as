@@ -74,6 +74,12 @@ package net.satcy.util{
 			return str;
 		}
 		
+		static public function trimWhitespace(str:String):String {
+			if (str == null) {
+				return "";
+			}
+			return str.replace(/^\s+|\s+$/g, "");
+		}
 		
 	}
 }

@@ -20,6 +20,10 @@ package net.satcy.util{
 		private static var _frameCount:uint = 0;
 		public static function get frameCount():uint{ return _frameCount; }
 		
+		{
+			EnterFrame.start();
+		}
+		
 		public static function add(__mc:*, __handler:Function, _groupId:int = 0):void{
 			if ( dict[__mc] != undefined ){
 				remove(__mc);
